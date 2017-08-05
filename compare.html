@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>cmpare</title>
+</head>
+<body style="margin-right: auto;margin-left: auto;width: 90%;max-width: 640px;">
+<h2>汉语文本在线分析</h2>
+<h5>请依次输入要对比的内容!</>
+<h5>标点符号将被过滤掉(标记为BD)!</h5>
+
+<div >
+    <p>输入对象:(请使用空格进行分隔)</p>
+    <textarea id="input" name="input" style="width: 100%;height: 120px;"></textarea>
+    <p>对比对象:(请使用空格进行分隔)</p>
+    <textarea id="compare" name="compare" style="width: 100%;height: 120px;"></textarea>
+</div>
+
+<button onclick="myFunction()" style="width: 100px;height: 40px;color: white;background-color: forestgreen;font-size: 16px;">开始对比</button>
+<button onclick="quickLook()" style="width: 100px;height: 40px;color: white;background-color: deepskyblue;font-size: 16px;">输入预览</button>
+
+<p id="output"></p>
+
+<div id="div">
+
+
+</div>
+
+<p id="a"></p>
+<p id="b"></p>
+<p id="c"></p>
+<p id="d"></p>
+
+<div id="input-shuru"></div>
+<div id="quick-input"></div>
+<div id="compare-shuru"></div>
+<div id="quick-compare"></div>
+
+<script>
+    function myFunction() {
+
+        var index = 0;
+        var output = "";
+
+        var input = document.getElementById("input").value;
+        var compare = document.getElementById("compare").value;
+        newinput = stripscript(input)
+        newcompare = stripscript(compare)
+
+        var input_arr = newinput.split("\n");
+        var compare_arr = newcompare.split("\n");
+
+        var print = "";
+        for (var i = 0; i < input_arr.length; i++) {
+
+            var input_str = input_arr[i].replace("\n","")
+            var input_items = input_str.split(" ")
+
+            var compare_str = compare_arr[i].replace("\n","")
+            var compare_items = compare_str.split(" ")
+
+            var hang = 0;
+            var a_number = 0;
+
+            for (var m = 0; m < input_items.length; m++) {
+                if (input_items[m] == "BD"){
+                    a_number = a_number+1;
+                }else {
+                    for (var n = 0; n < compare_items.length; n++) {
+
+
+                        if (input_items[m] == compare_items[n]) {
+                            index = index + 1;
+                            hang = hang + 1;
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+
+            print = print + "<p style='font-size: 14px;'>第" + String(i + 1) + "行正确数:<span style='font-size: 20px;color: green;'>" + String(hang-1) + "</span><span style='font-size: 14px;color: gray;'>/" + String(input_items.length-a_number-1) +"</span><span style='font-size: 14px;color: red;'>" + String(input_arr[i])+"--> "+String(input_items.length-a_number-1) + "</span>"+ "</p>";
+
+            hang = 0;
+            a_number = 0;
+
+        }
+        input_hang = "输入的总行数:" + String(input_arr.length);
+        compare_hang = "对比的总行数:" + String(compare_arr.length);
+
+
+        if (input == "") {
+            output = "无法比较,请检查输入!"
+        } else {
+            output = "正确的总数量:" + String(index)
+            document.getElementById("div").innerHTML = print;
+            document.getElementById("b").innerHTML = input_hang;
+            document.getElementById("d").innerHTML = compare_hang;
+        }
+
+        document.getElementById("output").innerHTML = output;
+
+        print = "";
+        index = 0;
+        input_arr = []
+        compare_arr = []
+        document.getElementById("input-shuru").innerHTML="";
+        document.getElementById("quick-input").innerHTML="";
+        document.getElementById("compare-shuru").innerHTML="";
+        document.getElementById("quick-compare").innerHTML="";
+
+    }
+
+    function quickLook(){
+
+        var input = document.getElementById("input").value;
+        var compare = document.getElementById("compare").value;
+
+        input = stripscript(input)
+        compare = stripscript(compare)
+
+
+        document.getElementById("div").innerHTML = "";
+
+        document.getElementById("b").innerHTML = "";
+        document.getElementById("d").innerHTML = "";
+
+        var input_arr = input.split("\n");
+//        var compare_arr = compare.split("\n");
+
+        var print = "";
+        for (var i = 0; i < input_arr.length; i++) {
+
+            var input_items = input_arr[i].split(" ")
+//            var compare_items = compare_arr[i].split(" ")
+
+            print = print + "<p'>第" + String(i+1) + "行:</p>";
+            for (var m = 0; m < input_items.length; m++) {
+                print = print + "<p'>" + String(input_items[m]) + "</p>";
+            }
+
+
+        }
+        document.getElementById("div").innerHTML = print;
+        print = "";
+
+    }
+    function stripscript(s)
+    {
+        var pattern = new RegExp("[`~!@#$^&*()=|{}':;'.,\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+        var rs = "";
+        for (var i = 0; i < s.length; i++) {
+            rs = rs+s.substr(i, 1).replace(pattern, 'BD');
+        }
+        return rs;
+    }
+
+</script>
+
+
+</body>
+</html>
